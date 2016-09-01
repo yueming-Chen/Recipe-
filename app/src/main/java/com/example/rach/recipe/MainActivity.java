@@ -1,6 +1,7 @@
 package com.example.rach.recipe;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import android.os.Handler;
 
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,11 +34,15 @@ public class MainActivity extends AppCompatActivity
     private Button btnStart;
     private TextView textView;
     private TextView textView2;
+    private Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+    final Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         btnDialog = (Button) this.findViewById(R.id.btn1);
         textView = (TextView) this.findViewById(R.id.tv1);
         btnStart = (Button) this.findViewById(R.id.btnStart);
@@ -44,16 +51,15 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
         recognizer.setRecognitionListener(new MyRecognizerListener());
-
+        recognizer.startListening(intent);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
                 recognizer.startListening(intent);
             }
         });
+
+
         btnDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +72,12 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(intent, 1);
             }
         });
+
+//        Intent intent = new Intent(MainActivity.this, NickyService.class);
+//        startService(intent);
+//        Intent intent2 = new Intent(MainActivity.this, MyRecognizerListener.class);
+//        startService(intent2);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -97,9 +109,11 @@ public class MainActivity extends AppCompatActivity
                     all = all + r + "\n";
                 }
                 textView.setText(all);
+
             }
         }
     }
+
 
     private class MyRecognizerListener implements RecognitionListener {
 
@@ -109,8 +123,9 @@ public class MainActivity extends AppCompatActivity
             StringBuffer sb = new StringBuffer();
             for(String res: resList) {
                 sb.append(res + "\n");
+                break;
             }
-            textView2.setText("onResults: " + sb.toString());
+            textView2.setText(sb.toString());
             Log.d("RECOGNIZER", "onResults: " + sb.toString());
         }
 
@@ -121,10 +136,12 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReadyForSpeech(Bundle params) {
+            Log.d("RECOGNIZER", "ready");
         }
 
         @Override
         public void onBeginningOfSpeech() {
+            Log.d("RECOGNIZER", "beginning");
         }
 
         @Override
@@ -133,19 +150,34 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onBufferReceived(byte[] buffer) {
+            Log.d("RECOGNIZER", "onBufferReceived");
         }
 
         @Override
         public void onEndOfSpeech() {
+
+            Log.d("RECOGNIZER", "onEndOfSpeech");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Do something after 5s = 5000ms
+                    Log.d("RECOGNIZER","done");
+                    recognizer.startListening(intent);
+                }
+            }, 1000);
         }
 
         @Override
         public void onPartialResults(Bundle partialResults) {
+            Log.d("RECOGNIZER", "onPartialResults" + partialResults.toString());
         }
 
         @Override
         public void onEvent(int eventType, Bundle params) {
+            Log.d("RECOGNIZER", "onPartialResults" + params.toString());
         }
+
+
     }
 
     @Override
