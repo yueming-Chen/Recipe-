@@ -122,8 +122,12 @@ public class MainActivity extends AppCompatActivity
             List<String> resList = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             StringBuffer sb = new StringBuffer();
             for(String res: resList) {
-                sb.append(res + "\n");
+                sb.append(res);
                 break;
+            }
+            Log.d("RECOGNIZER", sb.toString());
+            if(sb.toString().equals("下一步")){
+                Log.d("RECOGNIZER", "那我就下一步");
             }
             textView2.setText(sb.toString());
             Log.d("RECOGNIZER", "onResults: " + sb.toString());
