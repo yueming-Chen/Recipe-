@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.rach.recipe">
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:launchMode="singleTop">
+        <!-- Points to searchable activity so the whole app can invoke search. -->
+        <!--<meta-data-->
+            <!--android:name="android.app.default_searchable"-->
+            <!--android:value=".ShowlistActivity" />-->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -18,8 +25,58 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value="com.example.rach.recipe.ShowlistActivity" />
         </activity>
-        <service android:name=".NickyService"/>
+        <activity android:name=".ShowlistActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="com.example.rach.recipe.pasta" />
+                <action android:name="com.example.rach.recipe.desert" />
+                <action android:name="com.example.rach.recipe.rice" />
+                <action android:name="com.example.rach.recipe.steak" />
+                <action android:name="com.example.rach.recipe.salad" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"
+                />
+        </activity>
+
+
+        <activity android:name=".DetailActivity">
+            <intent-filter>
+                <action android:name="com.example.rach.recipe.rand" />
+                <action android:name="com.example.rach.recipe.ITEM" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".SearchableActivity"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"
+                />
+        </activity>
+
+
     </application>
 
 </manifest>

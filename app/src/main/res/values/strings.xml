@@ -6,4 +6,11 @@
 
     <string name="action_settings">Settings</string>
     <string name="damn">fuckyou\r\n</string>
+    <string name="shoes">shoes</string>
+    <string name="salad">沙拉</string>
+    <string name="steak">牛排</string>
+    <string name="rice">飯類</string>
+    <string name="dessert">點心</string>
+    <string name="pasta">義大利麵</string>
+    <string name="what">今天想吃什麼?</string>
 </resources>
